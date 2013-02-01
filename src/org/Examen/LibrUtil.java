@@ -1,13 +1,43 @@
 package org.Examen;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
+
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Iterator;
 
 public class LibrUtil {
+
+	public static void GuardarObjeto(Object obj,String nombreArchivo)
+	{
+		try {
+			FileOutputStream fos = new FileOutputStream(nombreArchivo+".bin");
+		    ObjectOutputStream out = new ObjectOutputStream(fos);
+		    out.writeObject(obj);
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		}
+
+	   /**
+	      * @param obj se ingresa el objeto que se quiere leer para obtener el nombre del archivo
+	      * @return retorna el objeto que quiere leer
+	      * @throws IOException
+	      * @throws ClassNotFoundException
+	      */
+
+	public static Object GetObjeto(Object obj,String nombreArchivo) throws IOException, ClassNotFoundException,FileNotFoundException
+	{
+		FileInputStream fis = new FileInputStream(nombreArchivo+".bin");
+		ObjectInputStream in = new ObjectInputStream(fis);
+		
+		return in.readObject();
+		}
+
+
 
 	
 	public static boolean isInteger(String str) {
