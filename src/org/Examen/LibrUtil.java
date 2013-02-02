@@ -5,7 +5,11 @@ import java.io.*;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Iterator;
-
+/**
+ * 
+ * @author Matias Nahuel Heredia
+ *
+ */
 public class LibrUtil {
 
 	public static void GuardarObjeto(Object obj,String nombreArchivo)
@@ -28,7 +32,6 @@ public class LibrUtil {
 	      * @throws IOException
 	      * @throws ClassNotFoundException
 	      */
-
 	public static Object GetObjeto(Object obj,String nombreArchivo) throws IOException, ClassNotFoundException,FileNotFoundException
 	{
 		FileInputStream fis = new FileInputStream(nombreArchivo+".bin");
@@ -39,7 +42,12 @@ public class LibrUtil {
 
 
 
-	
+/**
+ * 	metodo que sirve para verificar si la cadena de caracteres 
+ *  es entera o no
+ * @param str Cadena de caracteres
+ * @return true si la cadena es entera y false si la cadena no es entera
+ */
 	public static boolean isInteger(String str) {
 	    try {
 	        Integer.parseInt(str);
@@ -60,36 +68,61 @@ public class LibrUtil {
 		}while (isInteger(linea)==false);
 		return Integer.parseInt(linea);
 	}
-    /*public static Object OrdenarLista (Object lista,String propiedad) throws Exception
+    /**
+     * 
+     * @param lista
+     * @param propiedad string del metodo que por el que se quiere 
+     * ordenar ejemplo getNombre ordena por el metodo getNombre una lista
+     * @return Devuelve la lista ordenada
+     * @throws Exception
+     */
+	// TODO Ordenar lista
+	public static Object OrdenarLista (Object lista,String propiedad) throws Exception
 	{
     	@SuppressWarnings("unchecked")
 		ArrayList<Object> list = (ArrayList<Object>) lista;
-        Object per = list.get(0);
-        String methodNameSet;
-        Method metodos[] = per.getClass().getMethods();
-        int countname=0;
-        for (int i=0;i<metodos.length;i++)
+    	String PropAnterior= null;
+        for (int f=0;f<list.size();f++)
         {
-        	if(propiedad.equals(metodos[i].getName()))
-        	{
-        		
-        	}
+        	
+        	Object objeto = ((ArrayList<Object>) lista).get(f);      	
+        	
+        	String methodNameSet;
+        	Method metodos[] = objeto.getClass().getMethods();
+        
+        		for (int i=0;i<metodos.length;i++)
+        		{
+        			if(propiedad.equals(metodos[i].getName()))
+        			{
+        				methodNameSet = metodos[i].getName();
+        				System.out.println(methodNameSet);
+        				String valor = metodos[i].invoke(objeto, new Object[0]).toString();
+        				
+        				System.out.println("valor antes"+PropAnterior);
+        				System.out.println("valor antes"+valor);
+        				if(PropAnterior!=null)
+        				{
+        				System.out.println(""+valor.compareTo(PropAnterior));
+        				}
+        	            PropAnterior = valor.toString();
+        				
+        			}
+        		}
         }
-        methodNameSet = metodos[3].getName().replaceFirst("get", "set");
-        System.out.println(methodNameSet);
-        Method metodoSet = per.getClass().getMethod(propiedad, metodos[3].getReturnType());
-        String valor = metodos[3].invoke(per, new Object[0]).toString();
-		System.out.println(valor);
+        
+        //Method metodoSet = per.getClass().getMethod(propiedad, metodos[3].getReturnType());
+        //String valor = metodos[3].invoke(per, new Object[0]).toString();
+		//System.out.println(valor);
 		return list;
 	}
-    */
+    
     /**
      * Lista los metodos getters definidos por el programador
      *  para obtener las propiedades y sus valores
      *  mostrando tambien el nombre del objeto
      * @param obj objeto que se quiere listar
      * @throws Exception
-     * @author Matias Nahuel Heredia
+     
      */
     public static void mostrarObjeto (Object obj) throws Exception
 	{
@@ -111,7 +144,13 @@ public class LibrUtil {
     		}
     	}
 	}
-    
+    /**
+     * Pregunta mediante una cadena de string que se imprime
+     * en pantalla y devuelve la respuesta en el return
+     * @param preguntar pregunta formulada
+     * @return respuesta
+     * @throws IOException
+     */
     public static String Preguntar(String preguntar) throws IOException
 	{
 		System.out.println(preguntar);
@@ -123,6 +162,7 @@ public class LibrUtil {
     
     public static Object pedirObjeto (Object obj) throws Exception
 	{
+    	
     	String methodNameSet;
     	Method metodos[] = obj.getClass().getMethods();
     	System.out.println("----------------------------");
@@ -154,6 +194,7 @@ public class LibrUtil {
     	}
     	return obj;
 	}
+    
     
     
     @SuppressWarnings("unchecked")
