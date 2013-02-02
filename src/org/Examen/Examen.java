@@ -24,7 +24,8 @@ public class Examen {
         lisPer.add(per);        
         }
         
-		LibrUtil.OrdenarLista(lisPer, "getEdad");
+		LibrUtil.ordena(lisPer, "edad");
+		LibrUtil.mostrarLista(lisPer);
 	}
 
 }

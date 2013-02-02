@@ -1,10 +1,12 @@
 package org.Examen;
-
+import java.util.Collections;  
+import java.util.Comparator;  
 import java.io.*;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 /**
  * 
  * @author Matias Nahuel Heredia
@@ -77,45 +79,43 @@ public class LibrUtil {
      * @throws Exception
      */
 	// TODO Ordenar lista
-	public static Object OrdenarLista (Object lista,String propiedad) throws Exception
-	{
-    	@SuppressWarnings("unchecked")
-		ArrayList<Object> list = (ArrayList<Object>) lista;
-    	String PropAnterior= null;
-        for (int f=0;f<list.size();f++)
-        {
-        	
-        	Object objeto = ((ArrayList<Object>) lista).get(f);      	
-        	
-        	String methodNameSet;
-        	Method metodos[] = objeto.getClass().getMethods();
-        
-        		for (int i=0;i<metodos.length;i++)
-        		{
-        			if(propiedad.equals(metodos[i].getName()))
-        			{
-        				methodNameSet = metodos[i].getName();
-        				System.out.println(methodNameSet);
-        				String valor = metodos[i].invoke(objeto, new Object[0]).toString();
-        				
-        				System.out.println("valor antes"+PropAnterior);
-        				System.out.println("valor antes"+valor);
-        				if(PropAnterior!=null)
-        				{
-        				System.out.println(""+valor.compareTo(PropAnterior));
-        				}
-        	            PropAnterior = valor.toString();
-        				
-        			}
-        		}
-        }
-        
-        //Method metodoSet = per.getClass().getMethod(propiedad, metodos[3].getReturnType());
-        //String valor = metodos[3].invoke(per, new Object[0]).toString();
-		//System.out.println(valor);
-		return list;
-	}
+	@SuppressWarnings({ "unchecked", "rawtypes" })  
+ public static void ordena(List lista, final String propiedad) {  
+  Collections.sort(lista, new Comparator() {  
+     
+   public int compare(Object obj1, Object obj2) {  
+      
+    Class clase = obj1.getClass();  
+    String getter = "get" + Character.toUpperCase(propiedad.charAt(0)) + propiedad.substring(1);  
+    try {  
+     Method getPropiedad = clase.getMethod(getter);  
+       
+     Object propiedad1 = getPropiedad.invoke(obj1);  
+     Object propiedad2 = getPropiedad.invoke(obj2);  
+       
+     if(propiedad1 instanceof Comparable && propiedad2 instanceof Comparable) {  
+      Comparable prop1 = (Comparable)propiedad1;  
+      Comparable prop2 = (Comparable)propiedad2;  
+      return prop1.compareTo(prop2);  
+     }//CASO DE QUE NO SEA COMPARABLE  
+     else {  
+      if(propiedad1.equals(propiedad2))  
+       return 0;  
+      else  
+       return 1;  
+  
+     }  
     
+    }  
+    catch(Exception e) {  
+     e.printStackTrace();  
+    }  
+    return 0;  
+   }  
+  });  
+ }   
+	
+	
     /**
      * Lista los metodos getters definidos por el programador
      *  para obtener las propiedades y sus valores
