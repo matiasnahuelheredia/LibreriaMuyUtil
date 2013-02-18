@@ -1,9 +1,12 @@
 package org.Examen;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Collections;  
 import java.util.Comparator;  
 import java.io.*;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 /**
@@ -13,6 +16,71 @@ import java.util.List;
  */
 public class LibrUtil {
 
+	
+public static boolean isDate(String fecha){
+        SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy");
+String strFecha = fecha;
+@SuppressWarnings("unused")
+Date fechaDate = null;
+try {
+fechaDate = formato.parse(strFecha);
+return true;
+} catch (ParseException ex) {
+return false;
+}
+}
+
+public static Date DeStringADate(String fecha){
+        SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy");
+String strFecha = fecha;
+Date fechaDate = null;
+try {
+fechaDate = formato.parse(strFecha);
+return fechaDate;
+} catch (ParseException ex) {
+ex.printStackTrace();
+return fechaDate;
+}
+}
+
+
+public static boolean isDouble(String numero){
+
+try{
+Double.parseDouble(numero);
+return true;
+}
+catch (Exception ex)
+{
+return false;
+}
+
+}
+
+
+
+public static Date PreguntarFecha(String pregunta)
+{
+	Date fecha;
+	String linea = "";
+	do
+	{
+		System.out.println(pregunta);
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+
+		 try {
+			linea = br.readLine();
+		} catch (IOException e) {
+		} 
+		
+	}while(isDate(linea)==false);
+	fecha = DeStringADate(linea);
+	return fecha;
+}
+
+
+
+	
 	public static void GuardarObjeto(Object obj,String nombreArchivo)
 	{
 		try {
@@ -33,7 +101,7 @@ public class LibrUtil {
 	      * @throws IOException
 	      * @throws ClassNotFoundException
 	      */
-	public static Object GetObjeto(Object obj,String nombreArchivo) throws IOException, ClassNotFoundException,FileNotFoundException
+	public static Object GetObjetoDesdeArchivo(String nombreArchivo) throws IOException, ClassNotFoundException,FileNotFoundException
 	{
 		FileInputStream fis = new FileInputStream(nombreArchivo+".bin");
 		ObjectInputStream in = new ObjectInputStream(fis);
@@ -71,10 +139,8 @@ public class LibrUtil {
 	    		methodNameSet = metodos[f].getName();//nombre del metodo del objeto
 	    		if (methodNameSet.substring(0, 3).contains("set"))//si el metodo es un set
 	    		{	    			
-	    			System.out.println("metodo "+metodos[f].getName());
-	    			System.out.println(columnas[countColum]);
 	    		   String tipoDato = metodos[f].getParameterTypes()[0].getSimpleName();
-	    		       System.out.println("tipo de dato "+tipoDato);
+	    		       
 	    			if (tipoDato.equals("String"))
 	    			{    		 		
 	    				metodos[f].invoke(objec, columnas[countColum]);
@@ -112,7 +178,22 @@ public class LibrUtil {
 	    } catch (NumberFormatException nfe) {}
 	    return false;
 	}
-	public static int PreguntaEntero(String preguntar) throws IOException
+	public static int PreguntarEntero(String preguntar) throws IOException
+	{
+		String linea;
+		do{
+		System.out.println(preguntar);
+		
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+
+		 linea = br.readLine();
+		
+		}while (isInteger(linea)==false);
+		return Integer.parseInt(linea);
+	}
+	
+	
+	public static int PreguntarDouble(String preguntar) throws IOException
 	{
 		String linea;
 		do{
@@ -130,7 +211,6 @@ public class LibrUtil {
      * @param lista
      * @param propiedad string del metodo que por el que se quiere 
      * ordenar ejemplo getNombre ordena por el metodo getNombre una lista
-     * @return Devuelve la lista ordenada
      * @throws Exception
      */
 	// TODO Ordenar lista
@@ -189,7 +269,7 @@ public class LibrUtil {
     	{
     		
     		methodNameSet = metodos[i].getName();
-    		if (methodNameSet.contains("get"))
+    		if (methodNameSet.substring(0,3).equals("get"))
     		{
     		System.out.println(methodNameSet.replaceFirst("get", ""));
     		
@@ -219,7 +299,7 @@ public class LibrUtil {
     /**
      * obtiene un objeto a partir de 
      * @param nombre
-     * @return
+     * @return retorna el objeto sin concatenar
      * @throws Exception
      */
     
@@ -250,10 +330,14 @@ public class LibrUtil {
         	
                    		if (tipoParametro.equals("int"))//en caso de que el metodo set
                    		{
-                   			obj.getClass().getMethod(listaMetodos[i].getName(), listaMetodos[i].getParameterTypes()[0]).invoke(obj, PreguntaEntero("Ingrese el "+listaMetodos[i].getName().substring(3)));
+                   			obj.getClass().getMethod(listaMetodos[i].getName(), listaMetodos[i].getParameterTypes()[0]).invoke(obj, PreguntarEntero("Ingrese el "+listaMetodos[i].getName().substring(3)));
                    		}
-        	
-        	
+                        
+                   		if (tipoParametro.equals("Date"))//en caso de que el metodo set
+                   		{
+                   			obj.getClass().getMethod(listaMetodos[i].getName(), listaMetodos[i].getParameterTypes()[0]).invoke(obj, PreguntarFecha("Ingrese la "+listaMetodos[i].getName().substring(3)));
+                   		}
+        	      
         	
         	}
         }
