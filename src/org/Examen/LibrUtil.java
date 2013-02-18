@@ -2,7 +2,6 @@ package org.Examen;
 import java.util.Collections;  
 import java.util.Comparator;  
 import java.io.*;
-
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -42,7 +41,63 @@ public class LibrUtil {
 		return in.readObject();
 		}
 
-
+	/**
+	 * 
+	 * @param cadena indica una cadena de caracteres que se transformara en un objeto
+	 * @param finLinea indica un nuevo objeto
+	 * @param separador separador entre propiedades del objeto
+	 * @param nombreDeClase
+	 * @return lista del tipo del objeto
+	 * TODO la excepcion se produce cuando la cadena se ingresa mal por lo tanto se debe validar afuera del metodo y no se valida dentro de este
+	 */
+	@SuppressWarnings({ "rawtypes" }) 
+	public static List pedirObjetosPorCadena(String cadena,String finLinea,String separador,String nombreDeClase) throws Exception
+	{
+		
+		String methodNameSet;
+		ArrayList<Object> list = new ArrayList<Object>();
+		String[] filas = cadena.split(finLinea);//separa los que tienen el caracter separador que separa las filas
+		Class clazz = Class.forName(LibrUtil.class.getPackage().getName()+"."+nombreDeClase);//obtengo la clase del tipo especificado por parametro
+	    for (int i=0;i<filas.length;i++)//recorre las filas
+	    {
+	    String[] columnas = filas[i].split(separador);//en cada fila separa las columnas
+	    
+	    Object objec = clazz.getConstructor(null).newInstance(null);//instancia el objeto
+	    
+	    Method metodos[] = clazz.getMethods();// obtiene los metodos de la clase
+	    int countColum=0;//cuenta posicion columnas
+	    	for (int f=0;f<columnas.length*2;f++)// recorre los metodos del objeto para encontrar setters y asignarle valores de la cadena
+	    	{	
+	    		methodNameSet = metodos[f].getName();//nombre del metodo del objeto
+	    		if (methodNameSet.substring(0, 3).contains("set"))//si el metodo es un set
+	    		{	    			
+	    			System.out.println("metodo "+metodos[f].getName());
+	    			System.out.println(columnas[countColum]);
+	    		   String tipoDato = metodos[f].getParameterTypes()[0].getSimpleName();
+	    		       System.out.println("tipo de dato "+tipoDato);
+	    			if (tipoDato.equals("String"))
+	    			{    		 		
+	    				metodos[f].invoke(objec, columnas[countColum]);
+	    			}
+    		
+	    			if (tipoDato.equals("int"))
+	    			{    		 		
+	    				metodos[f].invoke(objec, Integer.parseInt(columnas[countColum]));
+	    			}
+	    		      
+	    		
+	    		
+	    		countColum++;//aumenta el contador de columnas cada vez que encuentra un metodo set
+	    		}
+	    		
+	    	}
+	    list.add(i, objec);
+	    }
+		
+		return  list;
+		
+	}
+	
 
 /**
  * 	metodo que sirve para verificar si la cadena de caracteres 
@@ -122,7 +177,6 @@ public class LibrUtil {
      *  mostrando tambien el nombre del objeto
      * @param obj objeto que se quiere listar
      * @throws Exception
-     
      */
     public static void mostrarObjeto (Object obj) throws Exception
 	{
@@ -160,41 +214,51 @@ public class LibrUtil {
 		return linea;
 	}
     
-    public static Object pedirObjeto (Object obj) throws Exception
-	{
-    	
-    	String methodNameSet;
-    	Method metodos[] = obj.getClass().getMethods();
-    	System.out.println("----------------------------");
-    	System.out.println(obj.getClass().getSimpleName());
-    	System.out.println("----------------------------");
-    	for (int i=0;i<metodos.length-9;i++)
-    	{
-    		
-    		methodNameSet = metodos[i].getName();
-    		if (methodNameSet.contains("set"))
-    		{
-    		
-    		String tipoDato = metodos[i].getParameterTypes()[0].getSimpleName();
-    		    if (tipoDato.equals("String"))
-    		    {
-    		       String respuesta = Preguntar("ingrese "+ methodNameSet.replaceFirst("set",""));    		 		
-    		       metodos[i].invoke(obj, respuesta);
-    		    }
-    		
-    		    if (tipoDato.equals("int"))
-    		    {
-    		      int respuesta = PreguntaEntero("ingrese "+ methodNameSet.replaceFirst("set",""));    		 		
-    		      metodos[i].invoke(obj, respuesta);
-    		    }
-    		
-    		
-    		
-    		}
-    	}
-    	return obj;
-	}
     
+    
+    /**
+     * obtiene un objeto a partir de 
+     * @param nombre
+     * @return
+     * @throws Exception
+     */
+    
+    @SuppressWarnings("unchecked")
+	public static Object pedirObjeto (String nombre) throws Exception
+    {
+    	System.out.println("-------------------");
+        System.out.println("----"+nombre);
+        System.out.println("-------------------");
+		@SuppressWarnings("rawtypes")
+		Class clazz = Class.forName(LibrUtil.class.getPackage().getName()+"."+nombre);//obtengo la clase del tipo especificado por parametro
+        Method listaMetodos[] = clazz.getMethods();//obtengo los metodos de la clase
+        Object obj;
+        
+        obj = clazz.getConstructor(null).newInstance(null);//instancio el objeto 
+        
+        for (int i=0;i<listaMetodos.length;i++)
+        {
+        	if(listaMetodos[i].getName().substring(0, 3).contains("set"))
+        	{
+        	
+        
+                   String tipoParametro= listaMetodos[i].getParameterTypes()[0].getSimpleName();
+                   		if (tipoParametro.equals("String"))
+                   		{
+                   			obj.getClass().getMethod(listaMetodos[i].getName(), listaMetodos[i].getParameterTypes()[0]).invoke(obj, Preguntar("Ingrese el "+listaMetodos[i].getName().substring(3)));
+                   		}
+        	
+                   		if (tipoParametro.equals("int"))//en caso de que el metodo set
+                   		{
+                   			obj.getClass().getMethod(listaMetodos[i].getName(), listaMetodos[i].getParameterTypes()[0]).invoke(obj, PreguntaEntero("Ingrese el "+listaMetodos[i].getName().substring(3)));
+                   		}
+        	
+        	
+        	
+        	}
+        }
+    	return obj;
+    }
     
     
     @SuppressWarnings("unchecked")

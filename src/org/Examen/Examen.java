@@ -1,5 +1,6 @@
 package org.Examen;
 
+import java.awt.List;
 import java.util.ArrayList;
 
 
@@ -12,20 +13,18 @@ public class Examen {
 	 * @throws Exception 
 	 */
 	
+	@SuppressWarnings("unchecked")
 	public static void main(String[] args) throws Exception {
-		// TODO Auto-generated method stub
-		ArrayList<Persona> lisPer = new ArrayList<Persona>();
-		Persona per = null;
-		for (int i=0;i<2;i++)
-        {
-		per = new Persona();
-        per = (Persona) LibrUtil.pedirObjeto(per);
+		Alumno alu= new Alumno();
+		ArrayList<Alumno> listalu = new ArrayList<Alumno>();
+		for (int i=0;i<3;i++)
+		{
+			alu = (Alumno) LibrUtil.pedirObjeto("Alumno");
+			listalu.add(alu);
+		}
+		
+        LibrUtil.mostrarLista(listalu);
         
-        lisPer.add(per);        
-        }
-        
-		LibrUtil.ordena(lisPer, "edad");
-		LibrUtil.mostrarLista(lisPer);
 	}
 
 }
