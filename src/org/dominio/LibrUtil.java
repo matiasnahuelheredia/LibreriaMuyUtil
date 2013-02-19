@@ -383,7 +383,38 @@ public static Date PreguntarFecha(String pregunta)
     	
     }
     	
+
+	public static <T> ArrayList<T> EliminarObjetoLista (List<T> list,String Propiedad,String valor) throws Exception
+    {
+    	ArrayList<T> listaDeRetorno = new ArrayList<T>();
+    	for( Iterator<T> it = list.iterator(); it.hasNext(); ) { 
+			
+    		
+    		T obj = it.next();//obtengo el objeto de la lista
+    		
+    		Method metodos[] = obj.getClass().getMethods();
+    		for (int i=0;i<metodos.length;i++)
+        	{
+        		
+        		String methodNameSet = metodos[i].getName();
+        		if (methodNameSet.substring(0,3).equals("get"))
+        		{
+        		       if(methodNameSet.replaceFirst("get", "").equals(Propiedad))
+        		       {
+        		    	   String valorProp = metodos[i].invoke(obj, new Object[0]).toString();
+        		    	   if (!(valorProp.equals(valor))&&obj!=null)
+        		    	   {
+                               listaDeRetorno.add(obj);
+        		    	   }
+        		       }
+        		}
+        	}
+    		
+	     
+    	}
+    	return listaDeRetorno;
     	
+    }	
     	
     	
     	

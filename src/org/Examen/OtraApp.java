@@ -10,7 +10,7 @@ import org.dominio.LibrUtil;
 public class OtraApp {
 
 
-	@SuppressWarnings("unchecked")
+
 	public static void main(String[] args) throws Exception {
        
 		
@@ -23,10 +23,10 @@ public class OtraApp {
 		listAlu.add(alu);
 		alu = (Alumno) LibrUtil.pedirObjeto("Alumno");
 		listAlu.add(alu);
-		int legajo = LibrUtil.PreguntarEntero("ingrese numero de legajo");
+		int legajo = LibrUtil.PreguntarEntero("ingrese numero de legajo que quiera borrar de la lista");
 		
-		alu = LibrUtil.buscarObjetoLista(listAlu,"Legajo",Integer.toString(legajo));
-		LibrUtil.mostrarObjeto(alu);
+		listAlu = LibrUtil.EliminarObjetoLista(listAlu, "Legajo",Integer.toString(legajo));
+		LibrUtil.mostrarLista(listAlu);
 		
 		
         }
