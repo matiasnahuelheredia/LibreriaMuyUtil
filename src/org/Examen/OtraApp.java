@@ -2,6 +2,9 @@ package org.Examen;
 
 import java.util.ArrayList;
 
+import org.dominio.Alumno;
+import org.dominio.LibrUtil;
+
 
 
 public class OtraApp {
