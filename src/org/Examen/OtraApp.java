@@ -11,15 +11,19 @@ public class OtraApp {
 	public static void main(String[] args) throws Exception {
        
 		
-		//ArrayList<Alumno> listAlu = new ArrayList<Alumno>();
-		/*listAlu = (ArrayList<Alumno>) LibrUtil.GetObjetoDesdeArchivo(listAlu, "listaAlumnos");
+		/*ArrayList<Alumno> listAlu = new ArrayList<Alumno>();
+		listAlu = (ArrayList<Alumno>) LibrUtil.GetObjetoDesdeArchivo("listaAlumnos");
 		LibrUtil.mostrarLista(listAlu);*/
-		java.lang.Runtime.getRuntime().exec("ls");
-		/*
+		ArrayList<Alumno> listAlu = new ArrayList<Alumno>();
 		Alumno alu = new Alumno();
 		alu = (Alumno) LibrUtil.pedirObjeto("Alumno");
-		LibrUtil.GuardarObjeto(alu, "listaAlumnos");*/
+		listAlu.add(alu);
+		alu = (Alumno) LibrUtil.pedirObjeto("Alumno");
+		listAlu.add(alu);
+		int legajo = LibrUtil.PreguntarEntero("ingrese numero de legajo");
 		
+		alu = LibrUtil.buscarObjetoLista(listAlu,"Legajo",Integer.toString(legajo));
+		LibrUtil.mostrarObjeto(alu);
 		
 		
         }
